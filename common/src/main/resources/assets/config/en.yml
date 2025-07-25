@@ -23,6 +23,11 @@ general:
   log-player-addresses: true
   # Maximum number of players online with the same IP address
   max-online-per-ip: 3
+  # List of IP addresses exempt from the 'max-online-per-ip' limit.
+  # This is useful for allowing more AFK accounts from a given IP.
+  whitelisted-ips:
+    - "127.0.0.1"
+    - "::1"
 
 # Sensitivity settings for the attack tracker
 # Only edit this if you know what you're doing
