@@ -140,6 +140,7 @@ public final class SonarConfiguration {
     // General settings
     logPlayerAddresses = generalConfig.getBoolean("general.log-player-addresses");
     maxOnlinePerIp = clamp(generalConfig.getInt("general.max-online-per-ip"), 0, 99);
+    whitelistedIps = generalConfig.getStringList("general.whitelisted-ips");
 
     // Attack tracker
     minPlayersForAttack = clamp(generalConfig.getInt("attack-tracker.min-players-for-attack"), 2, 1024);
@@ -324,6 +325,8 @@ public final class SonarConfiguration {
   private boolean logPlayerAddresses;
   @Getter
   private int maxOnlinePerIp;
+  @Getter
+  private List<String> whitelistedIps;
   @Getter
   private int minPlayersForAttack;
   @Getter
