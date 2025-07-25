@@ -23,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.jonesdev.sonar.api.Sonar;
+import xyz.jonesdev.sonar.api.config.SonarConfiguration;
 import xyz.jonesdev.sonar.api.fallback.protocol.ProtocolVersion;
 import xyz.jonesdev.sonar.api.fingerprint.FingerprintingUtil;
 import xyz.jonesdev.sonar.common.fallback.netty.FallbackTimeoutHandler;
@@ -169,9 +170,12 @@ public abstract class FallbackInboundHandlerAdapter extends ChannelInboundHandle
                                     final @NotNull InetAddress inetAddress,
                                     final @NotNull Runnable loginPacket) throws Exception {
     Sonar.get0().getFallback().getOnline().compute(inetAddress, (__, count) -> {
-      final int maxOnlinePerIp = Sonar.get0().getConfig().getMaxOnlinePerIp();
-      // Skip the maximum online per IP check if it's disabled in the configuration
-      if (count != null && maxOnlinePerIp > 0) {
+      final SonarConfiguration config = Sonar.get0().getConfig();
+      final int maxOnlinePerIp = config.getMaxOnlinePerIp();
+      final String hostAddress = inetAddress.getHostAddress();
+
+      // Skip the maximum online per IP check if it's disabled in the configuration or the IP is whitelisted
+      if (count != null && maxOnlinePerIp > 0 && !config.getWhitelistedIps().contains(hostAddress)) {
         // Check if the number of online players using the same IP address as
         // the connecting player is greater than the configured amount
         if (count >= maxOnlinePerIp) {
