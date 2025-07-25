@@ -110,6 +110,13 @@ public abstract class FallbackInboundHandlerAdapter extends ChannelInboundHandle
     }
 
     final String hostAddress = inetAddress.getHostAddress();
+    
+    // Skip verification if the IP address is whitelisted
+    if (Sonar.get0().getConfig().getWhitelistedIps().contains(hostAddress)) {
+        initialLogin(ctx.channel(), inetAddress, initialLoginAction);
+        return;
+    }
+    
     // Check if the player failed the verification too many times
     final int limit = Sonar.get0().getConfig().getVerification().getBlacklistThreshold();
     if (limit > 0) {
